@@ -152,10 +152,49 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 		}
 		
 		function procedural() {
-
+			var secondsElapsed = null;
+			var label = null;
+			var secondsText = null;
+			
+			function textForSeconds(seconds) {
+				var hrs = Math.trunc(seconds / 3600);
+				seconds -= hrs * 3600;
+				var min = Math.trunc(seconds / 60);
+				seconds -= min * 60;
+				var sec = Math.trunc(seconds);
+					
+				hrs = `${hrs}`.padStart(2, '0');
+				min = `${min}`.padStart(2, '0');
+				sec = `${sec}`.padStart(2, '0');
+				return `${hrs}:${min}:${sec}`
+			}
+			
+			secondsElapsed = 0;
+			
+			label = document.createElement("span");
+			label.innerText = "Seconds elapsed: ";
+			document.body.appendChild(label);
+			
+			secondsText = document.createElement("h2");
+			secondsText.setAttribute("class", "timer");
+			secondsText.innerText = textForSeconds(secondsElapsed);
+			document.body.appendChild(secondsText);
+			
+			window.setInterval(function() {
+				secondsElapsed += 1;
+				secondsText.innerText = textForSeconds(secondsElapsed);
+			}, 1000);
+			
+			// It doesn't look bad at all, and indeed it's probably the
+			// best way for a small program like this. JavaScript's
+			// original scope of use.
+			//
+			// But as you may have seen in my older projects, things
+			// will devolve a bit once we start having complexity,
+			// like a dynamic list of child components, so on.
 		}
 		
-		statefulComponent();
+		procedural();
 		
 	</SCRIPT>
 	
