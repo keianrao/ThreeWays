@@ -1,0 +1,94 @@
+<!DOCTYPE HTML>
+<HTML>
+
+	<META CHARSET="UTF-8" />
+	
+	<BODY />
+	
+	<STYLE>
+		.timer {
+			display: inline-block;
+			font-family: monospace;
+			padding-left: 10px;
+		}
+	</STYLE>
+	
+	<SCRIPT>
+		
+		function modelViewController() {
+			var g_model = {
+				secondsElapsed: null,
+				
+				init: function() {
+					this.secondsElapsed = 0;
+				},
+				advance: function() {
+					this.secondsElapsed += 1;
+				}
+			};
+			var g_view = {
+				model: null,
+				label: null,				
+				secondsText: null,
+				
+				textForSeconds: function(seconds) {
+					var hrs = Math.trunc(seconds / 3600);
+					seconds -= hrs * 3600;
+					var min = Math.trunc(seconds / 60);
+					seconds -= min * 60;
+					var sec = Math.trunc(seconds);
+					
+					hrs = `${hrs}`.padStart(2, '0');
+					min = `${min}`.padStart(2, '0');
+					sec = `${sec}`.padStart(2, '0');
+					return `${hrs}:${min}:${sec}`
+				},
+				init: function(model) {
+					this.model = model;
+					// (1) 'model' should be a reference here.
+					// (2) 'this' should currently be bound to 'view'.
+
+					this.label = document.createElement("span");
+					this.label.innerText = "Seconds elapsed: ";
+					document.body.appendChild(this.label);
+					
+					this.secondsText = document.createElement("h2");
+					this.secondsText.setAttribute("class", "timer");
+					this.secondsText.innerText =
+						this.textForSeconds(this.model.secondsElapsed);
+					document.body.appendChild(this.secondsText);
+				},
+				repaint: function() {
+					this.secondsText.innerText =
+						this.textForSeconds(this.model.secondsElapsed);
+				}
+			};
+			
+			g_model.init();
+			g_view.init(g_model);
+			// These can be methods in the model and view objects, or
+			// they could be broken out into functions in the controller.
+			// Either way, code for them are in different domains.
+			
+			window.setInterval(function() {
+				g_model.advance();
+				g_view.repaint();
+			}, 1000);
+			// The view could have its own timer for repainting, but it
+			// certainly isn't its job to change the model. That's the
+			// controller's job, which we are doing here.
+		}
+		
+		function statefulComponent() {
+		
+		}
+		
+		function procedural() {
+
+		}
+		
+		modelViewController();
+		
+	</SCRIPT>
+	
+</HTML>
