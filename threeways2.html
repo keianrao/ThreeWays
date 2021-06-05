@@ -1,0 +1,188 @@
+<!DOCTYPE HTML>
+<!--
+ThreeWays2 - vanilla JS demo
+©2021 Keian Rao <keian.rao@gmail.com>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+-->
+<HTML>
+
+	<META CHARSET="UTF-8" />
+	
+	<STYLE>
+		button { margin: 2px 4px; }
+		.artist {
+			display: inline-block;
+			margin: 4px;
+		}
+		.title {
+			display: inline-block;
+			margin: 4px;
+			
+			color: #7A7;
+			text-shadow: #00000018 2px 2px;
+		}
+	</STYLE>
+	
+	<BODY>
+		MVC
+	</BODY>
+
+		
+	<SCRIPT>
+		function modelViewController() {
+			const NAMES = [
+				"Amanda", "Jeremy", "Myra", "Frances",
+				"Adi", "Indera", "Ishak", "Mei", "Yuchen",
+				"Harald"
+			];
+			const STARTERS = [
+				"Malevolent", "Sunset", "Digital", "Heartbreak",
+				"Memories of", "One Day, I Found", "Grim",
+				"My Happy", "I'm So Tired of", "Polyphonic"
+			];
+			const ENDERS = [
+				"Love", "Pain", "Story", "Treasure",
+				"Fantasy", "Rain", "Land", "Home",
+				"Joke", "Book", "Sun", "Moon",
+				"World", "Symphony"
+			];
+			
+			function random(array) {
+				return array[Math.floor(Math.random() * array.length)];
+			}
+		
+			class Model {
+				constructor() {
+					this.songs = [];
+				}
+				
+				addRandomSong() {
+					var song = {
+						artist: random(NAMES),
+						title: random(STARTERS) + " " + random(ENDERS)
+					};
+					this.songs.push(song);
+				}
+				
+				clearSongs() {
+					this.songs = [];
+				}
+			}
+			
+			class View {
+				constructor(parent, model) {
+					this.model = model;
+					
+					this.addButton = document.createElement("button");
+					this.addButton.innerText = "Add random song";
+					this.addButton.addEventListener(
+						"click", this.addRandomSong.bind(this)
+					);
+					parent.appendChild(this.addButton);
+					
+					this.clearButton = document.createElement("button");
+					this.clearButton.innerText = "Clear songs";
+					this.clearButton.addEventListener(
+						"click", this.clearSongs.bind(this)
+					);
+					parent.appendChild(this.clearButton);
+					
+					this.list = document.createElement("ul");
+					parent.appendChild(this.list);
+					this.render();
+				}
+				
+				render() {
+					this.list.replaceChildren();
+					console.log(this.model.songs);
+					for (var song of this.model.songs) {
+						var item = document.createElement("li");
+						
+						var artist = document.createElement("span");
+						artist.className += " artist";
+						artist.innerText = song.artist;
+						item.appendChild(artist);
+						
+						var title = document.createElement("h3");
+						title.className += " title";
+						title.innerText = song.title;
+						item.appendChild(title);
+						
+						this.list.appendChild(item);
+					}
+				}
+				
+				addRandomSong() {
+					this.model.addRandomSong();
+					this.render();
+				}
+				
+				clearSongs() {
+					this.model.clearSongs();
+					this.render();
+				}
+			}
+			
+			var model = new Model();
+			var view = new View(document.body, model);
+			
+			/*
+			One thing I'm unsure about here is. I've had the view modify
+			the model by making calls to it. Was it not supposed to do that,
+			that it instead should call the.. controller?
+			
+			It's not a big deal if that was what I was supposed to do.
+			I just have to inject myself (the controller) with the model
+			to the view, and I'd forward/process the view's request
+			towards the model.
+			
+			One funny way to implement that is actually to have the view
+			provide no code for reacting to events. Instead it exposes its
+			controls, namely the buttons, and I the controller would add
+			my own event listeners to those.
+			*/
+		}
+		
+		if (document.body.innerText == "MVC") {
+			document.body.innerText = "";
+			modelViewController();
+		}
+	</SCRIPT>
+		
+
+	<SCRIPT>
+		function statefulComponent() {
+		
+		}
+		
+		if (document.body.innerText == "OBJ") {
+			document.body.innerText = "";
+			statefulComponent();
+		}
+	</SCRIPT>
+
+
+	<SCRIPT>
+		function procedural() {
+			
+		}
+		
+		if (document.body.innerText == "PROC") {
+			document.body.innerText = "";
+			procedural();
+		}
+	</SCRIPT>
+	
+</HTML>
