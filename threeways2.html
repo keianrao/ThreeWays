@@ -25,40 +25,23 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 		.artist {
 			display: inline-block;
 			margin: 4px;
+			font-style: italic;
 		}
 		.title {
 			display: inline-block;
-			margin: 4px;
-			
-			color: #7A7;
+			margin: 4px;			
+			color: #595;
 			text-shadow: #00000018 2px 2px;
 		}
 	</STYLE>
 	
 	<BODY>
-		MVC
+		OBJ
 	</BODY>
-
-		
+	
+	
 	<SCRIPT>
-		function modelViewController() {
-			const NAMES = [
-				"Amanda", "Jeremy", "Myra", "Frances",
-				"Adi", "Indera", "Ishak", "Mei", "Yuchen",
-				"Harald"
-			];
-			const STARTERS = [
-				"Malevolent", "Sunset", "Digital", "Heartbreak",
-				"Memories of", "One Day, I Found", "Grim",
-				"My Happy", "I'm So Tired of", "Polyphonic"
-			];
-			const ENDERS = [
-				"Love", "Pain", "Story", "Treasure",
-				"Fantasy", "Rain", "Land", "Home",
-				"Joke", "Book", "Sun", "Moon",
-				"World", "Symphony"
-			];
-			
+		function modelViewController() {			
 			function random(array) {
 				return array[Math.floor(Math.random() * array.length)];
 			}
@@ -70,8 +53,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 				
 				addRandomSong() {
 					var song = {
-						artist: random(NAMES),
-						title: random(STARTERS) + " " + random(ENDERS)
+						artist: random(Model.NAMES),
+						title: 
+							random(Model.STARTERS) 
+							+ " " + random(Model.ENDERS)
 					};
 					this.songs.push(song);
 				}
@@ -80,6 +65,22 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 					this.songs = [];
 				}
 			}
+			Model.NAMES = [
+				"Amanda", "Jeremy", "Myra", "Frances",
+				"Adi", "Indera", "Ishak", "Mei", "Yuchen",
+				"Harald"
+			];
+			Model.STARTERS = [
+				"Malevolent", "Sunset", "Digital", "Heartbreak",
+				"Memories of", "One Day, I Found", "Grim",
+				"My Happy", "I'm So Tired of", "Polyphonic"
+			];
+			Model.ENDERS = [
+				"Love", "Pain", "Story", "Treasure",
+				"Fantasy", "Rain", "Land", "Home",
+				"Joke", "Book", "Sun", "Moon",
+				"World", "Symphony"
+			];
 			
 			class View {
 				constructor(parent, model) {
@@ -164,7 +165,85 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 	<SCRIPT>
 		function statefulComponent() {
+			function random(array) {
+				return array[Math.floor(Math.random() * array.length)];
+			}
 		
+			class SongList {
+				constructor() {
+					this.componentDiv = document.createElement("div");
+				
+					this.songs = [];
+				
+					this.addButton = document.createElement("button");
+					this.addButton.innerText = "Add random song";
+					this.addButton.addEventListener(
+						"click", this.addRandomSong.bind(this)
+					);
+					this.componentDiv.appendChild(this.addButton);
+					
+					this.clearButton = document.createElement("button");
+					this.clearButton.innerText = "Clear songs";
+					this.clearButton.addEventListener(
+						"click", this.clearSongs.bind(this)
+					);
+					this.componentDiv.appendChild(this.clearButton);
+					
+					this.list = document.createElement("ul");
+					this.componentDiv.appendChild(this.list);
+				}
+				
+				addRandomSong() {
+					var song = {
+						artist: random(SongList.NAMES),
+						title:
+							random(SongList.STARTERS)
+							+ " " + random(SongList.ENDERS)
+					};
+					this.songs.push(song);
+					
+					// I opt here not to do a full re-render but instead
+					// to edit the list in lockstep with the songs.
+					// I still keep the song list anyways, in case I
+					// need it for something else. Although of course,
+					// if I used another class for the song list item..
+					
+					var item = document.createElement("li");
+					var artist = document.createElement("span");
+					artist.className += " artist";
+					artist.innerText = song.artist;
+					item.appendChild(artist);
+					var title = document.createElement("h3");
+					title.className += " title";
+					title.innerText = song.title;
+					item.appendChild(title);
+					
+					this.list.appendChild(item);
+				}
+				
+				clearSongs() {
+					this.list.replaceChildren();
+					this.songs = [];
+				}
+			}
+			SongList.NAMES = [
+				"Amanda", "Jeremy", "Myra", "Frances",
+				"Adi", "Indera", "Ishak", "Mei", "Yuchen",
+				"Harald"
+			];
+			SongList.STARTERS = [
+				"Malevolent", "Sunset", "Digital", "Heartbreak",
+				"Memories of", "One Day, I Found", "Grim",
+				"My Happy", "I'm So Tired of", "Polyphonic"
+			];
+			SongList.ENDERS = [
+				"Love", "Pain", "Story", "Treasure",
+				"Fantasy", "Rain", "Land", "Home",
+				"Joke", "Book", "Sun", "Moon",
+				"World", "Symphony"
+			];
+			
+			document.body.appendChild(new SongList().componentDiv);
 		}
 		
 		if (document.body.innerText == "OBJ") {
