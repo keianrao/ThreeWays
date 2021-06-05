@@ -36,12 +36,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	</STYLE>
 	
 	<BODY>
-		OBJ
+		PROC
 	</BODY>
 	
 	
 	<SCRIPT>
-		function modelViewController() {			
+		function modelViewController() {
+			console.log("Rendering by model-view-controller.");
+		
 			function random(array) {
 				return array[Math.floor(Math.random() * array.length)];
 			}
@@ -165,6 +167,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 	<SCRIPT>
 		function statefulComponent() {
+			console.log("Rendering by stateful component.");
+		
 			function random(array) {
 				return array[Math.floor(Math.random() * array.length)];
 			}
@@ -255,7 +259,85 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 	<SCRIPT>
 		function procedural() {
+			console.log("Rendering procedurally.");
+		
+			const NAMES = [
+				"Amanda", "Jeremy", "Myra", "Frances",
+				"Adi", "Indera", "Ishak", "Mei", "Yuchen",
+				"Harald"
+			];
+			const STARTERS = [
+				"Malevolent", "Sunset", "Digital", "Heartbreak",
+				"Memories of", "One Day, I Found", "Grim",
+				"My Happy", "I'm So Tired of", "Polyphonic"
+			];
+			const ENDERS = [
+				"Love", "Pain", "Story", "Treasure",
+				"Fantasy", "Rain", "Land", "Home",
+				"Joke", "Book", "Sun", "Moon",
+				"World", "Symphony"
+			];
+		
+			function random(array) {
+				return array[Math.floor(Math.random() * array.length)];
+			}
 			
+			var songs = [];
+			
+			var list = document.createElement("ul");
+				
+			function addRandomSong() {
+				var song = {
+					artist: random(NAMES),
+					title: random(STARTERS) + " " + random(ENDERS)
+				};
+				songs.push(song);
+				
+				// Like in the stateful component, I maintain
+				// both a list of songs and the DOM list.
+					
+				var item = document.createElement("li");
+				var artist = document.createElement("span");
+				artist.className += " artist";
+				artist.innerText = song.artist;
+				item.appendChild(artist);
+				var title = document.createElement("h3");
+				title.className += " title";
+				title.innerText = song.title;
+				item.appendChild(title);
+
+				list.appendChild(item);
+			}
+				
+			var addButton = document.createElement("button");
+			addButton.innerText = "Add random song";
+			addButton.addEventListener("click", addRandomSong);
+					
+			function clearSongs() {
+				list.replaceChildren();
+				songs = [];
+			}
+					
+			var clearButton = document.createElement("button");
+			clearButton.innerText = "Clear songs";
+			clearButton.addEventListener("click", clearSongs);
+			
+			document.body.appendChild(addButton);
+			document.body.appendChild(clearButton);
+			document.body.appendChild(list);
+			
+			/*
+			Procedural still seems to beat everyone, but I guess it'd
+			start to lose once we start editing lists, in their middles,
+			rather than clearing and appending. Once editing happens, it's
+			of course super easy to tear everything down and re-render.
+			
+			Thinking about the web frameworks I've learned about, perhaps
+			they go beyond just property watching. Maybe they really have
+			algorithms for making the minimal amount of DOM changes in
+			a re-render. But is that possible? The programmer writes the
+			rendering code assuming it's from scratch.
+			*/
 		}
 		
 		if (document.body.innerText == "PROC") {
